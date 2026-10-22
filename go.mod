@@ -1,4 +1,4 @@
-module github.com/charlieseay/stdout-scanner
+module github.com/seayniclabs/stdout-scanner
 
 go 1.24.0
 

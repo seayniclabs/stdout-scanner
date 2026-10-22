@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/charlieseay/stdout-scanner/internal/docker"
-	"github.com/charlieseay/stdout-scanner/internal/network"
-	"github.com/charlieseay/stdout-scanner/internal/output"
+	"github.com/seayniclabs/stdout-scanner/internal/docker"
+	"github.com/seayniclabs/stdout-scanner/internal/network"
+	"github.com/seayniclabs/stdout-scanner/internal/output"
 )
 
 // DeltaResult captures what changed between two scans.

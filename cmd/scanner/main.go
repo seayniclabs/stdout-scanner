@@ -8,18 +8,18 @@ import (
 	"os"
 	"strings"
 
-	"github.com/charlieseay/stdout-scanner/internal/api"
-	"github.com/charlieseay/stdout-scanner/internal/config"
-	"github.com/charlieseay/stdout-scanner/internal/credentials"
-	"github.com/charlieseay/stdout-scanner/internal/delta"
-	"github.com/charlieseay/stdout-scanner/internal/docker"
-	"github.com/charlieseay/stdout-scanner/internal/host"
-	"github.com/charlieseay/stdout-scanner/internal/metrics"
-	"github.com/charlieseay/stdout-scanner/internal/network"
-	"github.com/charlieseay/stdout-scanner/internal/output"
-	"github.com/charlieseay/stdout-scanner/internal/schedule"
-	"github.com/charlieseay/stdout-scanner/internal/sources"
-	"github.com/charlieseay/stdout-scanner/internal/update"
+	"github.com/seayniclabs/stdout-scanner/internal/api"
+	"github.com/seayniclabs/stdout-scanner/internal/config"
+	"github.com/seayniclabs/stdout-scanner/internal/credentials"
+	"github.com/seayniclabs/stdout-scanner/internal/delta"
+	"github.com/seayniclabs/stdout-scanner/internal/docker"
+	"github.com/seayniclabs/stdout-scanner/internal/host"
+	"github.com/seayniclabs/stdout-scanner/internal/metrics"
+	"github.com/seayniclabs/stdout-scanner/internal/network"
+	"github.com/seayniclabs/stdout-scanner/internal/output"
+	"github.com/seayniclabs/stdout-scanner/internal/schedule"
+	"github.com/seayniclabs/stdout-scanner/internal/sources"
+	"github.com/seayniclabs/stdout-scanner/internal/update"
 )
 
 var (
@@ -95,7 +95,7 @@ func runScan(args []string) {
 	fs := flag.NewFlagSet("scan", flag.ExitOnError)
 	token := fs.String("token", "", "StdOut API token (overrides config)")
 	url := fs.String("url", "", "StdOut instance URL (overrides config)")
-	outputMode := fs.String("output", "", "Output mode: json, markdown, or empty to push to StdOut")
+	outputMode := fs.String("output", "", "Output mode: json or markdown; empty pushes to configured targets (markdown if none)")
 	configPath := fs.String("config", "", "Config file path (default: auto-detected)")
 	skipHost := fs.Bool("skip-host", false, "Skip host info collection")
 	skipMetrics := fs.Bool("skip-metrics", false, "Skip resource metrics collection")
@@ -473,9 +473,10 @@ func emitScan(scan output.ScanResult, outputMode string, dryRun bool, cfg *confi
 	}
 
 	if !cfg.HasTargets() {
-		fmt.Fprintln(os.Stderr, "No targets configured. Use --output json/markdown, --webhook, --save-to, or --token/--url.")
-		fmt.Fprintln(os.Stderr, "Run 'stdout-scanner init' to configure targets.")
-		os.Exit(1)
+		// No push target: print the report rather than discard a finished scan.
+		fmt.Fprintln(os.Stderr, "No push targets configured; printing the report. Use --webhook, --save-to or --token/--url to send it ('stdout-scanner init').")
+		fmt.Print(output.RenderMarkdown(scan))
+		return
 	}
 
 	pushToTargets(scan, cfg)

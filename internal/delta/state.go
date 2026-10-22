@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/charlieseay/stdout-scanner/internal/output"
+	"github.com/seayniclabs/stdout-scanner/internal/output"
 )
 
 // SaveState writes a scan result to disk for future delta comparison.

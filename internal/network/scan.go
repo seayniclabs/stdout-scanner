@@ -6,22 +6,23 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/charlieseay/stdout-scanner/internal/credentials"
+	"github.com/seayniclabs/stdout-scanner/internal/credentials"
 )
 
 // Device represents a discovered network device.
 type Device struct {
-	IP       string     `json:"ip"`
-	Hostname string     `json:"hostname,omitempty"`
-	MAC      string     `json:"mac,omitempty"`
-	Vendor   string     `json:"vendor,omitempty"`
-	Type     string     `json:"type,omitempty"` // router, server, nas, printer, iot, workstation, unknown
-	Ports    []Port     `json:"ports,omitempty"`
-	SNMP     *SNMPInfo  `json:"snmp,omitempty"`
+	IP       string    `json:"ip"`
+	Hostname string    `json:"hostname,omitempty"`
+	MAC      string    `json:"mac,omitempty"`
+	Vendor   string    `json:"vendor,omitempty"`
+	Type     string    `json:"type,omitempty"` // router, server, nas, printer, iot, workstation, unknown
+	Ports    []Port    `json:"ports,omitempty"`
+	SNMP     *SNMPInfo `json:"snmp,omitempty"`
 }
 
 // Port represents an open port on a device.
@@ -260,7 +261,7 @@ func isAlive(ctx context.Context, host string) bool {
 
 	// Fallback: TCP connect to common ports
 	for _, port := range []uint16{80, 443, 22, 445} {
-		addr := fmt.Sprintf("%s:%d", host, port)
+		addr := net.JoinHostPort(host, strconv.Itoa(int(port)))
 		conn, err := net.DialTimeout("tcp", addr, 300*time.Millisecond)
 		if err == nil {
 			conn.Close()
@@ -371,7 +372,7 @@ func scanDevicePorts(ctx context.Context, ip string) []Port {
 		wg.Add(1)
 		go func(port uint16) {
 			defer wg.Done()
-			addr := fmt.Sprintf("%s:%d", ip, port)
+			addr := net.JoinHostPort(ip, strconv.Itoa(int(port)))
 			conn, err := net.DialTimeout("tcp", addr, 500*time.Millisecond)
 			if err == nil {
 				conn.Close()

@@ -15,7 +15,7 @@ import (
 const (
 	// GitHubReleasesAPI is the endpoint to check for new releases.
 	// Uses the GitHub API to get the latest release tag.
-	GitHubReleasesAPI = "https://api.github.com/repos/charlieseay/stdout-scanner/releases/latest"
+	GitHubReleasesAPI = "https://api.github.com/repos/seayniclabs/stdout-scanner/releases/latest"
 
 	// CheckTimeout is the maximum time to wait for the update check.
 	CheckTimeout = 5 * time.Second

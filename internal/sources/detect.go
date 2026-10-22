@@ -10,11 +10,12 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/charlieseay/stdout-scanner/internal/docker"
+	"github.com/seayniclabs/stdout-scanner/internal/docker"
 )
 
 // SourceType categorizes what kind of data a tool provides.
@@ -33,10 +34,10 @@ const (
 type DetectionMethod string
 
 const (
-	DetectedViaDocker    DetectionMethod = "docker_container"
-	DetectedViaPort      DetectionMethod = "port_probe"
-	DetectedViaBinary    DetectionMethod = "binary_in_path"
-	DetectedViaConfig    DetectionMethod = "config_file"
+	DetectedViaDocker DetectionMethod = "docker_container"
+	DetectedViaPort   DetectionMethod = "port_probe"
+	DetectedViaBinary DetectionMethod = "binary_in_path"
+	DetectedViaConfig DetectionMethod = "config_file"
 )
 
 // DataSource represents a detected (or missing) infrastructure tool.
@@ -45,7 +46,7 @@ type DataSource struct {
 	Type        SourceType      `json:"type"`
 	DetectedVia DetectionMethod `json:"detected_via"`
 	Endpoint    string          `json:"endpoint"`
-	Status      string          `json:"status"`      // running, stopped, accessible, unreachable
+	Status      string          `json:"status"` // running, stopped, accessible, unreachable
 	Accessible  bool            `json:"accessible"`
 	Version     string          `json:"version,omitempty"`
 }
@@ -67,12 +68,12 @@ type SourcesResult struct {
 type toolDef struct {
 	name        string
 	sourceType  SourceType
-	images      []string   // Docker image name substrings
-	port        uint16     // default port to probe
-	probePath   string     // HTTP path to confirm the service
-	binaries    []string   // binary names to check in PATH
-	configPaths []string   // config dirs/files to check
-	endpoint    string     // default endpoint format (use %s for host)
+	images      []string // Docker image name substrings
+	port        uint16   // default port to probe
+	probePath   string   // HTTP path to confirm the service
+	binaries    []string // binary names to check in PATH
+	configPaths []string // config dirs/files to check
+	endpoint    string   // default endpoint format (use %s for host)
 }
 
 // knownTools is the registry of tools the sources module can detect.
@@ -247,8 +248,8 @@ func Detect(containers []docker.Container) *SourcesResult {
 	sem := make(chan struct{}, 10)
 
 	// Phase 1: Docker detection (highest confidence)
-	dockerDetected := make(map[string]bool)    // tool name → detected
-	claimedPorts := make(map[uint16]string)     // port → tool name (from Docker)
+	dockerDetected := make(map[string]bool) // tool name → detected
+	claimedPorts := make(map[uint16]string) // port → tool name (from Docker)
 
 	for _, tool := range knownTools {
 		wg.Add(1)
@@ -439,7 +440,7 @@ func detectHost() string {
 
 // isPortOpen does a quick TCP connect to check if a port is open.
 func isPortOpen(host string, port uint16) bool {
-	addr := fmt.Sprintf("%s:%d", host, port)
+	addr := net.JoinHostPort(host, strconv.Itoa(int(port)))
 	conn, err := net.DialTimeout("tcp", addr, 2*time.Second)
 	if err != nil {
 		return false

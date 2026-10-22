@@ -1,3 +1,5 @@
 stdout-scanner
 *.exe
 .DS_Store
+/scanner
+*.tar.gz

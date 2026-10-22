@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charlieseay/stdout-scanner/internal/output"
+	"github.com/seayniclabs/stdout-scanner/internal/output"
 )
 
 // PushResult holds the response from any target.

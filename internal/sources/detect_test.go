@@ -3,7 +3,7 @@ package sources
 import (
 	"testing"
 
-	"github.com/charlieseay/stdout-scanner/internal/docker"
+	"github.com/seayniclabs/stdout-scanner/internal/docker"
 )
 
 func TestIsVersionString(t *testing.T) {

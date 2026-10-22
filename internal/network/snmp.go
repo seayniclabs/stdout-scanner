@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charlieseay/stdout-scanner/internal/credentials"
+	"github.com/seayniclabs/stdout-scanner/internal/credentials"
 	"github.com/gosnmp/gosnmp"
 )
 

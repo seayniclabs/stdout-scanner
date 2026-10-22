@@ -1,16 +1,19 @@
 # stdout-scanner
 
-Docker sidecar that discovers your infrastructure and pushes it to [StdOut](https://stdout.seayniclabs.com).
+Free scanner that inventories your Docker host (containers, ports, networks, volumes, host
+facts) and prints a Markdown or JSON report. It can also push the report to a webhook or a
+file. It started as StdOut's sidecar; StdOut is now a Sonique module, and the scanner is a
+stand-alone free tool.
 
 ## Quick Start
 
 ```bash
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
-  ghcr.io/charlieseay/stdout-scanner \
-  --token YOUR_TOKEN \
-  --url https://stdout.seayniclabs.com
+  ghcr.io/seayniclabs/stdout-scanner --output markdown
 ```
+
+With no `--output` and no push target, the Markdown report is printed.
 
 ## What it discovers
 
@@ -31,9 +34,11 @@ docker run --rm \
 ## Options
 
 ```
---token     StdOut API token (required for push)
---url       StdOut instance URL (required for push)
---output    json or markdown (print to stdout instead of pushing)
+--token     API token for a push target (optional)
+--url       Push target URL (optional)
+--webhook   POST the report to this URL (optional)
+--save-to   Also write the JSON report to this file
+--output    json or markdown (print to stdout instead of pushing; with no push target the Markdown report is printed)
 --full      Enable all detection modules
 --scan-sources Detect installed tooling (Prometheus, Trivy, Loki, etc.)
 --skip-host Skip host info collection
@@ -53,11 +58,11 @@ without manual setup.
 ```bash
 # JSON to stdout
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro \
-  ghcr.io/charlieseay/stdout-scanner --output json
+  ghcr.io/seayniclabs/stdout-scanner --output json
 
 # Markdown to stdout
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro \
-  ghcr.io/charlieseay/stdout-scanner --output markdown
+  ghcr.io/seayniclabs/stdout-scanner --output markdown
 ```
 
 ## Build from source

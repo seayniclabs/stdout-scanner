@@ -5,11 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charlieseay/stdout-scanner/internal/docker"
-	"github.com/charlieseay/stdout-scanner/internal/host"
-	"github.com/charlieseay/stdout-scanner/internal/metrics"
-	"github.com/charlieseay/stdout-scanner/internal/network"
-	"github.com/charlieseay/stdout-scanner/internal/sources"
+	"github.com/seayniclabs/stdout-scanner/internal/docker"
+	"github.com/seayniclabs/stdout-scanner/internal/host"
+	"github.com/seayniclabs/stdout-scanner/internal/metrics"
+	"github.com/seayniclabs/stdout-scanner/internal/network"
+	"github.com/seayniclabs/stdout-scanner/internal/sources"
 )
 
 type ScanResult struct {
