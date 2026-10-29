@@ -73,4 +73,4 @@ go build -o stdout-scanner ./cmd/scanner
 
 ## License
 
-Proprietary. Part of the StdOut product by [Seaynic Labs](https://seayniclabs.com).
+No license file is included in this repository yet.
